@@ -11,8 +11,12 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:21-slim
 
+RUN useradd --uid 1000 --create-home appuser
+
 EXPOSE 8080
 
-COPY --from=builder /app/target/demo-0.0.1-SNAPSHOT.jar /app.jar
+COPY --from=builder /app/target/demo-0.0.1-SNAPSHOT.jar /home/appuser/app.jar
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+USER appuser
+
+ENTRYPOINT ["java", "-jar", "/home/appuser/app.jar"]
